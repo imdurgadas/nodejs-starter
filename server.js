@@ -2,14 +2,18 @@ const express = require('express');
 const dotenv = require('dotenv');
 const color = require('colors');
 const morgan = require('morgan');
-
-//Route files
-const bootcampRoutes = require('./routes/bootcampRoutes');
-
+const db = require('./config/db')
 
 dotenv.config({
     path: './config/config.env'
 })
+
+//connect to db
+db();
+
+//Route files
+const bootcampRoutes = require('./routes/bootcampRoutes');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,6 +26,13 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/v1/bootcamps', bootcampRoutes);
 
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`.magenta);
 });
+
+//Handle unhandlded promise rejects
+process.on('unhandledRejection', (err, promise) => {
+    console.error(`Error: ${err}`.red);
+    //Close server and exit process
+    server.close(() => process.exit(1));
+})
