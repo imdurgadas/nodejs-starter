@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const color = require('colors');
 const morgan = require('morgan');
 const db = require('./config/db')
+const errorHandler = require('./middlewares/error');
 
 dotenv.config({
     path: './config/config.env'
@@ -22,10 +23,12 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
+app.use(express.json());
+
 //Mount routers
 app.use('/api/v1/bootcamps', bootcampRoutes);
 
-
+app.use(errorHandler);
 const server = app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`.magenta);
 });
