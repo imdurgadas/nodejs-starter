@@ -15,7 +15,7 @@ db();
 //Route files
 const bootcampRoutes = require('./routes/bootcampRoutes');
 const courseRoutes = require('./routes/courseRoutes');
-
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,7 +28,8 @@ app.use(express.json());
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcampRoutes);
-app.use('/api/v1/courses', courseRoutes)
+app.use('/api/v1/courses', courseRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 app.use(errorHandler);
 const server = app.listen(PORT, () => {
