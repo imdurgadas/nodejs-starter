@@ -95,7 +95,7 @@ const BootcampSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-}, { timestamps: true })
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } })
 
 
 //create slug from name next is important here.
@@ -124,6 +124,14 @@ BootcampSchema.pre('save', async function (next) {
     next();
 });
 
+
+//Reverse populate with courses
+BootcampSchema.virtual('courses', {
+    ref: 'Course',
+    localField: '_id',
+    foreignField: 'bootcamp', //one in Course Model
+    justOne: false //since we need array
+})
 
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema);

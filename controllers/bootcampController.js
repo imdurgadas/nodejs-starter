@@ -46,7 +46,8 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     const endIndex = page * limit;
     const total = await Bootcamp.countDocuments();
 
-    query = query.skip(startIndex).limit(limit);
+    //Courses are populated here virtually.. there are no course in the model. In the bootcamp , we have revertse populated it using virtuals
+    query = query.skip(startIndex).limit(limit).populate('courses');
 
     const bootcamps = await query;
 
