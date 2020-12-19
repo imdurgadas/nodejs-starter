@@ -8,13 +8,30 @@ const geocoder = require('../utils/geocode');
 // @access PUBLIC
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
 
+    const reqQuery = { ...req.params }
+
+    // Fields to exclude during filtering
+    const removeFields = ['select'];
+
+    // Loop over removeFields and delete them from reqQuery
+    removeFields.forEach(param => delete reqQuery[param]);
+
+    //Create operators like gte, gt, lt, in etc
     //Doing this to manipulate the query and add $ to gte, gt as its needed
     let query;
-    let queryStr = JSON.stringify(req.query);
+    let queryStr = JSON.stringify(reqQuery);
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
     console.log(queryStr);
 
-    const bootcamps = await Bootcamp.find(JSON.parse(queryStr));
+    query = Bootcamp.find(JSON.parse(queryStr));
+
+    if (req.query.select) {
+        const fields = req.query.select.split(',').join(' ');
+        query = query.select(fields);
+
+    }
+
+    const bootcamps = await query;
 
     res.status(200).json({
         success: true,
