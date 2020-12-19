@@ -133,11 +133,13 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 // @access PUBLIC
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
 
-    const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+    const bootcamp = await Bootcamp.findById(req.params.id);
 
     if (!bootcamp) {
         return next(new ErrorResponse(`Bootcamp not found with id: ${req.params.id}`, 404, {}));
     }
+
+    await bootcamp.remove();
 
     return res.status(200).json({
         success: true,
