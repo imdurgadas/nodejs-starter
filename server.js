@@ -11,6 +11,7 @@ const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors')
+const session = require('express-session')
 
 dotenv.config({
     path: './config/config.env'
@@ -18,6 +19,7 @@ dotenv.config({
 
 //connect to db
 db();
+
 
 //Route files
 const bootcampRoutes = require('./routes/bootcampRoutes');
@@ -34,6 +36,12 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 app.use(cookieParser());
 
+//Set session
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false
+}))
+
 //Sanitize data
 app.use(mongoSanitize());
 
@@ -49,7 +57,7 @@ const limiter = rateLimit({
     max: 100
 });
 
-app.use(rateLimit);
+app.use(limiter);
 app.use(hpp());
 
 //Allow cors.. public
