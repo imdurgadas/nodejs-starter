@@ -41,7 +41,6 @@ UserSchema.pre('save', async function (next) {
 
 //Sign jwt and return
 UserSchema.methods.getSignedJwtToken = function () {
-    console.log('called this method')
     return jwt.sign(
         {
             ... this._doc, password: undefined

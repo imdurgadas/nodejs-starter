@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors')
 const session = require('express-session')
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 dotenv.config({
     path: './config/config.env'
@@ -20,6 +21,11 @@ dotenv.config({
 //connect to db
 db();
 
+//Configure Session Store
+const store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions'
+});
 
 //Route files
 const bootcampRoutes = require('./routes/bootcampRoutes');
@@ -39,8 +45,10 @@ app.use(cookieParser());
 //Set session
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: false
-}))
+    saveUninitialized: false,
+    resave: false,
+    store: store
+}));
 
 //Sanitize data
 app.use(mongoSanitize());
