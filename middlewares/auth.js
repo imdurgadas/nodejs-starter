@@ -7,10 +7,8 @@ const User = require('../models/User')
 exports.protect = asyncHandler(async (req, res, next) => {
     let token;
 
-    if (req.session.user) {
-        return next();
-    } else if (req.headers.authorization && req.header.authorization.startsWith('Bearer')) {
-        token = req.header.authorization.split(' ')[1]
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1]
         //Make sure token exists
         if (!token) {
             return next(new ErrorResponse('Not authorized', 401, {}));
@@ -18,7 +16,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
         //Verify the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.session.user = decoded;
+        req.user = decoded;
         next();
     } else {
         return next(new ErrorResponse('Not authorized', 401, {}));

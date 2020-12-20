@@ -14,7 +14,7 @@ exports.register = asyncHandler(async (req, res, next) => {
         name, email, password, role
     })
 
-    sendTokenResponse(user, 200, req, res);
+    sendTokenResponse(user, 200, res);
 });
 
 
@@ -42,7 +42,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Invalid Credentials.'), 401);
     }
 
-    sendTokenResponse(user, 200, req, res);
+    sendTokenResponse(user, 200, res);
 });
 
 
@@ -50,7 +50,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/auth/me
 // @access Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-    const user = req.session.user;
+    const user = req.user;
     return res.status(200).json({
         success: true,
         data: user
@@ -58,7 +58,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 });
 
 exports.logout = asyncHandler(async (req, res, next) => {
-    req.session.destroy();
+    req.user = undefined;
     return res.status(200).json({
         success: true
     });
@@ -66,12 +66,10 @@ exports.logout = asyncHandler(async (req, res, next) => {
 
 
 //Get token from model , create cookie and send response
-const sendTokenResponse = (user, statusCode, req, res) => {
+const sendTokenResponse = (user, statusCode, res) => {
 
     //Create token
     const token = user.getSignedJwtToken();
-
-    req.session.user = user;
     return res.status(statusCode)
         .json({
             success: true,
