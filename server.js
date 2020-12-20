@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const db = require('./config/db')
 const errorHandler = require('./middlewares/error');
 const cookieParser = require('cookie-parser')
+const mongoSanitize = require('express-mongo-sanitize')
 
 dotenv.config({
     path: './config/config.env'
@@ -27,6 +28,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(mongoSanitize());
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcampRoutes);
