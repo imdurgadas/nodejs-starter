@@ -47,7 +47,12 @@ app.use(xss());
 // Rate limiting and prevent parameter pollution
 const limiter = rateLimit({
     windowMs: 10 * 60 * 1000, //10mins
-    max: 100
+    max: 3,
+    keyGenerator: function (req) {
+        console.log(`Client: ${req.headers.client}`);
+        return req.headers.client;
+    },
+    headers: true
 });
 
 app.use(limiter);
