@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse')
 const asyncHandler = require('express-async-handler')
+const { validationResult } = require('express-validator');
 
 // @desc Regiser User
 // @route POST /api/v1/auth/register
@@ -8,6 +9,12 @@ const asyncHandler = require('express-async-handler')
 exports.register = asyncHandler(async (req, res, next) => {
 
     const { name, email, password, role } = req.body;
+
+    const errors = validationResult(req);
+    console.log('Validation errors', errors);
+    if (!errors.isEmpty()) {
+        return next(new ErrorResponse(`Validation failed`, 422, errors.errors))
+    }
 
     //Create user
     const user = await User.create({
