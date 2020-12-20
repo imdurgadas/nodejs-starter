@@ -7,6 +7,7 @@ const errorHandler = require('./middlewares/error');
 const cookieParser = require('cookie-parser')
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet');
+const xss = require('xss-clean');
 
 dotenv.config({
     path: './config/config.env'
@@ -35,6 +36,9 @@ app.use(mongoSanitize());
 
 //Add Security Headers
 app.use(helmet());
+
+//Prevent cross type scripting
+app.use(xss());
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcampRoutes);
