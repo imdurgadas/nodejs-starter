@@ -10,6 +10,7 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
+const cors = require('cors')
 
 dotenv.config({
     path: './config/config.env'
@@ -50,6 +51,10 @@ const limiter = rateLimit({
 
 app.use(rateLimit);
 app.use(hpp());
+
+//Allow cors.. public
+app.use(cors());
+
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcampRoutes);
