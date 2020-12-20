@@ -6,6 +6,7 @@ const db = require('./config/db')
 const errorHandler = require('./middlewares/error');
 const cookieParser = require('cookie-parser')
 const mongoSanitize = require('express-mongo-sanitize')
+const helmet = require('helmet');
 
 dotenv.config({
     path: './config/config.env'
@@ -28,7 +29,12 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json());
 app.use(cookieParser());
+
+//Sanitize data
 app.use(mongoSanitize());
+
+//Add Security Headers
+app.use(helmet());
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcampRoutes);
